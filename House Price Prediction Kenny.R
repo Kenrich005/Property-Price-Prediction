@@ -14,7 +14,8 @@ missmap(property_train)
 
 # From the Missingness Map, we see there are 6% missing values.
 # However, we observe that some of the rows have all data empty
-# Lets omit the missing data in a new variable and check the number of remaining observations
+# Lets omit the missing data in a new variable
+# and check the number of remaining observations
 
 trial_data = na.omit(property_train)
 
@@ -29,23 +30,19 @@ table(property_train$Lot_Extent)
 # Doing the same for 42 variables would be a tedious task.
 # Hence, we will try and let R automatically do so for us.
 
-# For that, we first store the variables of character datatype in one variable.
-char_names = names(property_train[,sapply(property_train, is.character)])
+# For that, we first store the variables of character data in one variable.
+property_train <- property_train %>% mutate_if(is.character,as.factor)
 
-# We have now stored all variables of character datatype in the variable "char_names"
-char_names
-
-# As they are categorical variables, let us convert them into factors.
-property_train[,char_names]=lapply(property_train[,char_names], factor)
-
-# Using summary, we can have a look at each of the factor variable and its distribution.
-print(summary(property_train[char_names]))
-
+summary(property_train)
 # While summary does give us a concise view of the data distribution,
 # some of it is missing as this function only outputs 6
 # Another way to observe the distribution of each categorical variable is:
 
-for (val in char_names){
+fact_names = names(property_train[,sapply(property_train, is.factor)])
+fact_names
+
+
+for (val in fact_names){
 
     print(val)
 
@@ -70,7 +67,10 @@ remove_vals = c("Road_Type",
                 "Heating_Type",
                 "Pool_Quality",
                 "Miscellaneous_Feature",
-                "Id")
+                "Id",
+                "Functional_Rate",
+                "Exterior_Condition",
+                "Exterior2nd")
 
 # The above variables are those in which one category had more than 95% observations.
 # Since such variables may skew the regression analysis, we will remove them.
@@ -108,6 +108,7 @@ filtered_data = subset(filtered_data,
                        select = -c(Lane_Type,
                                    Fireplace_Quality,
                                    Fence_Quality))
+
 
 
 missmap(filtered_data)
@@ -249,20 +250,7 @@ summary(initial_model)
 # This means about 87% of the Sale_Price data is explained by all other variables
 
 # Now we do the stepwise mode
-stepwise_mode = step(initial_model, direction = "both")
-summary(stepwise_mode)
-
-# stepwise regression gives us the optimum variable combination for the model
-
-optimum_model = lm(formula = Sale_Price ~ Lot_Extent + Lot_Size + Land_Outline +
-                     Lot_Configuration + Neighborhood + Condition1 + House_Type +
-                     House_Design + Overall_Material + House_Condition + Construction_Year +
-                     Exterior1st + Exterior_Material + Basement_Height + Basement_Condition +
-                     Exposure_Level + BsmtFinType1 + First_Floor_Area + Second_Floor_Area +
-                     Underground_Full_Bathroom + Full_Bathroom_Above_Grade + Kitchen_Above_Grade +
-                     Kitchen_Quality + Rooms_Above_Grade + Functional_Rate + Fireplaces +
-                     Garage_Size + W_Deck_Area + Enclosed_Lobby_Area + Three_Season_Lobby_Area +
-                     Month_Sold + Sale_Condition, data = train)
+optimum_model = step(initial_model, direction = "both")
 
 summary(optimum_model)
 
@@ -282,6 +270,8 @@ boxplot(test$Sale_Price/1000,test$predict/1000,
         horizontal = TRUE,
         main = 'Comparision of Actual vs Predicted Sale Price')
 
+
+
 # Predicting the Sale Price for the test file
 
 property_test = read.csv('Property_Price_Test.csv')
@@ -295,7 +285,6 @@ property_test$Est_Sale_Price = predict(optimum_model,property_test)
 
 property_test <- property_test %>% mutate_if(is.character,as.factor)
 
-#Merging the extra levels in the test data
 levels(property_test$Condition1)
 levels(property_test$Condition1) = c("Artery","Feedr","Norm","Norm","PosA",
                                      "PosN","RRAe","RRAn","RRNe","RRNn")
@@ -323,3 +312,5 @@ levels(property_test$Sale_Condition) = c("Abnorml","Abnorml",
 
 # Now let us re-run the prediction again.
 property_test$Est_Sale_Price = predict(optimum_model,property_test)
+
+# The prediction has executed successfully.
