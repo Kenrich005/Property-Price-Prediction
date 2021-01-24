@@ -1,23 +1,23 @@
 setwd('G:/Imarticus/DSP_Online_2/Project1PropertyPricePrediction/Dataset')
 
 # Initiating the libraries
-library(Amelia) # For accessing the missmap function
-library(dplyr)
-library(Hmisc) # For using the impute function
-library(ggplot2)
+library(Amelia)       # For accessing the miss map function
+library(dplyr)        # For data-frame manipulation functions
+library(Hmisc)        # For using the impute function
+library(ggplot2)      # To plot appropriate graphs
 library(ModelMetrics) # For in built RMSE Calculation
 
-property_train = read.csv('Property_Price_Train.csv')
-str(property_train)
+PRT_DATA = read.csv('Property_Price_Train.csv')
+str(PRT_DATA)
 
-missmap(property_train)
+missmap(PRT_DATA, col = c('grey','black'))
 
 # From the Missingness Map, we see there are 6% missing values.
-# However, we observe that some of the rows have all data empty
+# However, we observe that some of the rows have all data empty.
 # Lets omit the missing data in a new variable
-# and check the number of remaining observations
+# and check the number of remaining observations.
 
-trial_data = na.omit(property_train)
+trial_data = na.omit(PRT_DATA)
 
 nrow(trial_data)
 # We see that omitting the missing data is causing all the rows to be omitted.
@@ -25,20 +25,22 @@ nrow(trial_data)
 rm(trial_data)
 
 # Lets look at each of the variable observation distribution
-table(property_train$Lot_Extent)
+table(PRT_DATA$Lot_Extent)
 
-# Doing the same for 42 variables would be a tedious task.
+# Doing the same for 42 factor variables would be a tedious task.
 # Hence, we will try and let R automatically do so for us.
 
 # For that, we first store the variables of character data in one variable.
-property_train <- property_train %>% mutate_if(is.character,as.factor)
+PRT_DATA <- PRT_DATA %>% mutate_if(is.character,as.factor)
 
-summary(property_train)
+summary(PRT_DATA)
+
 # While summary does give us a concise view of the data distribution,
-# some of it is missing as this function only outputs 6
+# some of it is missing as this function only outputs 6 factors.
+# The remaining are clubbed in "(Other)"
 # Another way to observe the distribution of each categorical variable is:
 
-fact_names = names(property_train[,sapply(property_train, is.factor)])
+fact_names = names(PRT_DATA[,sapply(PRT_DATA, is.factor)])
 fact_names
 
 
@@ -46,16 +48,16 @@ for (val in fact_names){
 
     print(val)
 
-    val_table = table(property_train[[val]], useNA = 'ifany')
+    count = table(PRT_DATA[[val]], useNA = 'ifany')
 
-    val_percent = round(prop.table(val_table)*100,2)
+    Percent = round(prop.table(count)*100,2)
 
-    print(cbind(val_table, val_percent))
+    print(cbind(count, Percent))
 
     cat("\n")
 }
 
-rm(val,val_percent,val_table)
+
 
 # Observing the data distribution, we see some highly skewed variables
 # We need to exclude those variables
@@ -77,7 +79,7 @@ remove_vals = c("Road_Type",
 
 
 
-filtered_data = select(property_train, -all_of(remove_vals))
+filtered_data = select(PRT_DATA, -all_of(remove_vals))
 
 rm(remove_vals)
 
@@ -122,7 +124,7 @@ missmap(filtered_data)
 # 2. Substitute the NAs by median or mean data
 
 # Let us check the summary of the Lot_Extent first
-summary(property_train$Lot_Extent)
+summary(PRT_DATA$Lot_Extent)
 
 # We see that median and mean are close to each other.
 # Hence we can choose either of these to substitute the NAs.
@@ -170,12 +172,12 @@ fact_names
 
 for (val in fact_names){
     print(val)
-    val_table = table(filtered_data[[val]], useNA = 'ifany')
-    val_percent = round(prop.table(val_table)*100,2)
-    print(cbind(val_table,val_percent))
+    count = table(filtered_data[[val]], useNA = 'ifany')
+    Percent = round(prop.table(count)*100,2)
+    print(cbind(count,Percent))
 }
 
-rm(val,val_percent,val_table)
+rm(val,Percent,count)
 
 Sale_Price_Mn = filtered_data$Sale_Price/1000000
 SP_M = "Sale_Price_Mn"
@@ -185,14 +187,14 @@ SP_K = "Sale_Price_K"
 for (val in fact_names){
     print(val)
 
-    plot_sum = ggplot(filtered_data, aes_string(x=val, y=SP_M))+
+    plot_sum = ggplot(PRT_DATA, aes_string(x=val, y=SP_M))+
         geom_col(fill = "skyblue")+
         ylab("Sale Price \n (in millions)")+
         geom_text(stat = "summary", aes(label=round(stat(y),1)), fun=sum, vjust=-0.3)
 
     print(plot_sum)
 
-    plot_mean = ggplot(filtered_data, aes_string(x=val, y=SP_K))+
+    plot_mean = ggplot(PRT_DATA, aes_string(x=val, y=SP_K))+
         stat_summary(fun=mean, geom="bar", fill = "pink")+
         ylab("Mean Sale Price \n(in thousands)")+
         geom_text(aes(label=round(stat(y),1)), stat = "summary", fun = mean, vjust = -0.3)
