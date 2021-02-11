@@ -3,89 +3,89 @@ Synopsis: Using Linear Regression to predict the Sale Price of houses.
 
 Property Price Prediction
 
-Problem Statement 
-There are a number of factors which determine property prices, some are logical, based on economic theories and population density and some are based on more intangible factors, like availability of amenities & necessities, neighborhood, etc. 
-Build a linear regression model to predict the price of the property from the dataset having attributes such as sale type, sale condition etc. 
+Problem Statement   
+There are a number of factors which determine property prices, some are logical, based on economic theories and population density and some are based on more intangible factors, like availability of amenities & necessities, neighborhood, etc.   
+Build a linear regression model to predict the price of the property from the dataset having attributes such as sale type, sale condition etc.   
 
-Data Description 
-•	SalePrice - the property's sale price in dollars. This is the target variable that you're trying to predict. 
-•	MSSubClass: The building class 
-•	MSZoning: The general zoning classification 
-•	LotFrontage: Linear feet of street connected to property 
-•	LotArea: Lot size in square feet 
-•	Street: Type of road access 
-•	Alley: Type of alley access 
-•	LotShape: General shape of property 
-•	LandContour: Flatness of the property 
-•	Utilities: Type of utilities available 
-•	LotConfig: Lot configuration 
-•	LandSlope: Slope of property 
-•	Neighborhood: Physical locations within Ames city limits 
-•	Condition1: Proximity to main road or railroad 
-•	Condition2: Proximity to main road or railroad (if a second is present) 
-•	BldgType: Type of dwelling 
-•	HouseStyle: Style of dwelling 
-•	OverallQual: Overall material and finish quality 
-•	OverallCond: Overall condition rating 
-•	YearBuilt: Original construction date 
-•	YearRemodAdd: Remodel date 
-•	RoofStyle: Type of roof 
-•	RoofMatl: Roof material 
-•	Exterior1st: Exterior covering on house 
-•	Exterior2nd: Exterior covering on house (if more than one material) 
-•	MasVnrType: Masonry veneer type 
-•	MasVnrArea: Masonry veneer area in square feet 
-•	ExterQual: Exterior material quality 
-•	ExterCond: Present condition of the material on the exterior 
-•	Foundation: Type of foundation 
-•	BsmtQual: Height of the basement 
-•	BsmtCond: General condition of the basement 
-•	BsmtExposure: Walkout or garden level basement walls 
-•	BsmtFinType1: Quality of basement finished area 
-•	BsmtFinSF1: Type 1 finished square feet 
-•	BsmtFinType2: Quality of second finished area (if present) 
-•	BsmtFinSF2: Type 2 finished square feet
-•	BsmtUnfSF: Unfinished square feet of basement area 
-•	TotalBsmtSF: Total square feet of basement area 
-•	Heating: Type of heating 
-•	HeatingQC: Heating quality and condition 
-•	CentralAir: Central air conditioning 
-•	Electrical: Electrical system 
-•	1stFlrSF: First Floor square feet 
-•	2ndFlrSF: Second floor square feet 
-•	LowQualFinSF: Low quality finished square feet (all floors) 
-•	GrLivArea: Above grade (ground) living area square feet 
-•	BsmtFullBath: Basement full bathrooms 
-•	BsmtHalfBath: Basement half bathrooms 
-•	FullBath: Full bathrooms above grade 
-•	HalfBath: Half baths above grade 
-•	Bedroom: Number of bedrooms above basement level 
-•	Kitchen: Number of kitchens 
-•	KitchenQual: Kitchen quality 
-•	TotRmsAbvGrd: Total rooms above grade (does not include bathrooms) 
-•	Functional: Home functionality rating 
-•	Fireplaces: Number of fireplaces 
-•	FireplaceQu: Fireplace quality 
-•	GarageType: Garage location 
-•	GarageYrBlt: Year garage was built 
-•	GarageFinish: Interior finish of the garage 
-•	GarageCars: Size of garage in car capacity 
-•	GarageArea: Size of garage in square feet 
-•	GarageQual: Garage quality 
-•	GarageCond: Garage condition 
-•	PavedDrive: Paved driveway 
-•	WoodDeckSF: Wood deck area in square feet 
-•	OpenPorchSF: Open porch area in square feet 
-•	EnclosedPorch: Enclosed porch area in square feet
-•	3SsnPorch: Three season porch area in square feet 
-•	ScreenPorch: Screen porch area in square feet 
-•	PoolArea: Pool area in square feet 
-•	PoolQC: Pool quality 
-•	Fence: Fence quality 
-•	MiscFeature: Miscellaneous feature not covered in other categories 
-•	MiscVal: Value of miscellaneous feature 
-•	MoSold: Month Sold 
-•	YrSold: Year Sold 
-•	SaleType: Type of sale 
-•	SaleCondition: Condition of sale 
+Data Description   
+â€¢	SalePrice - the property's sale price in dollars. This is the target variable that you're trying to predict.   
+â€¢	MSSubClass: The building class   
+â€¢	MSZoning: The general zoning classification   
+â€¢	LotFrontage: Linear feet of street connected to property   
+â€¢	LotArea: Lot size in square feet   
+â€¢	Street: Type of road access   
+â€¢	Alley: Type of alley access   
+â€¢	LotShape: General shape of property   
+â€¢	LandContour: Flatness of the property   
+â€¢	Utilities: Type of utilities available   
+â€¢	LotConfig: Lot configuration   
+â€¢	LandSlope: Slope of property   
+â€¢	Neighborhood: Physical locations within Ames city limits   
+â€¢	Condition1: Proximity to main road or railroad   
+â€¢	Condition2: Proximity to main road or railroad (if a second is present)   
+â€¢	BldgType: Type of dwelling   
+â€¢	HouseStyle: Style of dwelling   
+â€¢	OverallQual: Overall material and finish quality   
+â€¢	OverallCond: Overall condition rating   
+â€¢	YearBuilt: Original construction date   
+â€¢	YearRemodAdd: Remodel date   
+â€¢	RoofStyle: Type of roof   
+â€¢	RoofMatl: Roof material   
+â€¢	Exterior1st: Exterior covering on house   
+â€¢	Exterior2nd: Exterior covering on house (if more than one material)   
+â€¢	MasVnrType: Masonry veneer type   
+â€¢	MasVnrArea: Masonry veneer area in square feet   
+â€¢	ExterQual: Exterior material quality   
+â€¢	ExterCond: Present condition of the material on the exterior   
+â€¢	Foundation: Type of foundation   
+â€¢	BsmtQual: Height of the basement   
+â€¢	BsmtCond: General condition of the basement   
+â€¢	BsmtExposure: Walkout or garden level basement walls   
+â€¢	BsmtFinType1: Quality of basement finished area   
+â€¢	BsmtFinSF1: Type 1 finished square feet   
+â€¢	BsmtFinType2: Quality of second finished area (if present)   
+â€¢	BsmtFinSF2: Type 2 finished square feet  
+â€¢	BsmtUnfSF: Unfinished square feet of basement area   
+â€¢	TotalBsmtSF: Total square feet of basement area   
+â€¢	Heating: Type of heating   
+â€¢	HeatingQC: Heating quality and condition   
+â€¢	CentralAir: Central air conditioning   
+â€¢	Electrical: Electrical system   
+â€¢	1stFlrSF: First Floor square feet   
+â€¢	2ndFlrSF: Second floor square feet   
+â€¢	LowQualFinSF: Low quality finished square feet (all floors)   
+â€¢	GrLivArea: Above grade (ground) living area square feet   
+â€¢	BsmtFullBath: Basement full bathrooms   
+â€¢	BsmtHalfBath: Basement half bathrooms   
+â€¢	FullBath: Full bathrooms above grade   
+â€¢	HalfBath: Half baths above grade   
+â€¢	Bedroom: Number of bedrooms above basement level   
+â€¢	Kitchen: Number of kitchens   
+â€¢	KitchenQual: Kitchen quality   
+â€¢	TotRmsAbvGrd: Total rooms above grade (does not include bathrooms)   
+â€¢	Functional: Home functionality rating   
+â€¢	Fireplaces: Number of fireplaces   
+â€¢	FireplaceQu: Fireplace quality   
+â€¢	GarageType: Garage location   
+â€¢	GarageYrBlt: Year garage was built   
+â€¢	GarageFinish: Interior finish of the garage    
+â€¢	GarageCars: Size of garage in car capacity   
+â€¢	GarageArea: Size of garage in square feet   
+â€¢	GarageQual: Garage quality   
+â€¢	GarageCond: Garage condition   
+â€¢	PavedDrive: Paved driveway   
+â€¢	WoodDeckSF: Wood deck area in square feet   
+â€¢	OpenPorchSF: Open porch area in square feet   
+â€¢	EnclosedPorch: Enclosed porch area in square feet  
+â€¢	3SsnPorch: Three season porch area in square feet   
+â€¢	ScreenPorch: Screen porch area in square feet   
+â€¢	PoolArea: Pool area in square feet   
+â€¢	PoolQC: Pool quality   
+â€¢	Fence: Fence quality   
+â€¢	MiscFeature: Miscellaneous feature not covered in other categories   
+â€¢	MiscVal: Value of miscellaneous feature   
+â€¢	MoSold: Month Sold   
+â€¢	YrSold: Year Sold   
+â€¢	SaleType: Type of sale   
+â€¢	SaleCondition: Condition of sale   
 
